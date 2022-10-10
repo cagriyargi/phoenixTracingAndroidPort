@@ -1,0 +1,63 @@
+import 'package:donem_proje/main.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'gorevs.dart';
+import 'main.dart';
+
+//void main2() => runApp(MyApp());
+
+Future<List<Gorevler>> fetchGorevler() async {
+  String url = 'http://10.0.2.2/login/gorevs.php';
+  final response = await http.get(Uri.parse(url));
+  return gorevlerFromJson(response.body);
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "DENEMe2",
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("ApiDeneme Selam $username $userlevel"),
+      ),
+      body: Container(
+        child: FutureBuilder(
+          future: fetchGorevler(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data.length,
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, index) {
+                  Gorevler gorev = snapshot.data[index];
+                  return Card(
+                    child: Column(
+                      children: [
+                        Text('${gorev.gorevAdi}'),
+                        Text('${gorev.gorevAdres}'),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }
+            return CircularProgressIndicator();
+          },
+        ),
+      ),
+    );
+  }
+}

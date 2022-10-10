@@ -1,0 +1,131 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' show get;
+
+class Gorevler2 {
+  var gorev_id, gorev_adi, gorev_adres, gorev_calisan, gorev_tarih;
+  var gorev_yap;
+
+  Gorevler2({
+    this.gorev_id,
+    this.gorev_adi,
+    this.gorev_adres,
+    this.gorev_calisan,
+    this.gorev_tarih,
+    this.gorev_yap,
+  });
+
+  factory Gorevler2.fromJson(Map<String, dynamic> jsonData) {
+    return Gorevler2(
+        gorev_id: jsonData['gorev_id'],
+        gorev_adi: jsonData['gorev_adi'],
+        gorev_adres: jsonData['gorev_adres'],
+        gorev_calisan: jsonData['gorev_calisan'],
+        gorev_tarih: jsonData['gorev_tarih'],
+        gorev_yap: jsonData['gorev_yap']);
+  }
+}
+
+class CustomListView extends StatelessWidget {
+  final List<Gorevler2> gorevler;
+
+  CustomListView(this.gorevler);
+
+  Widget build(context) {
+    return ListView.builder(
+      itemCount: gorevler.length,
+      itemBuilder: (context, int currentIndex) {
+        return createViewItem(gorevler[currentIndex], context);
+      },
+    );
+  }
+
+  Widget createViewItem(Gorevler2 gorevler, BuildContext context) {
+    return ListTile(
+        title: new Card(
+          elevation: 5.0,
+          child: new Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.orange)),
+            padding: EdgeInsets.all(20.0),
+            margin: EdgeInsets.all(20.0),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8.0),
+                ),
+                Row(children: <Widget>[
+                  Padding(
+                      child: Text(
+                        gorevler.gorev_adi,
+                        style: new TextStyle(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.right,
+                      ),
+                      padding: EdgeInsets.all(1.0)),
+                  Text(" | "),
+                  Padding(
+                      child: Text(
+                        gorevler.gorev_yap,
+                        style: new TextStyle(fontStyle: FontStyle.italic),
+                        textAlign: TextAlign.right,
+                      ),
+                      padding: EdgeInsets.all(1.0)),
+                ]),
+              ],
+            ),
+          ),
+        ),
+        onTap: () {});
+  }
+}
+
+//Future is n object representing a delayed computation.
+Future<List<Gorevler2>> downloadJSON() async {
+  final jsonEndpoint = "http://10.0.2.2/login/query.php";
+
+  final response = await get(Uri.parse(jsonEndpoint));
+
+  if (response.statusCode == 200) {
+    List gorevler = json.decode(response.body);
+    return gorevler
+        .map((gorevler2) => new Gorevler2.fromJson(gorevler2))
+        .toList();
+  } else
+    throw Exception('We were not able to successfully download the json data.');
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      theme: new ThemeData(
+        primarySwatch: Colors.deepOrange,
+      ),
+      home: new Scaffold(
+        appBar: new AppBar(title: const Text('MySQL Images Text')),
+        body: new Center(
+          //FutureBuilder is a widget that builds itself based on the latest snapshot
+          // of interaction with a Future.
+          child: new FutureBuilder<List<Gorevler2>>(
+            future: downloadJSON(),
+            //we pass a BuildContext and an AsyncSnapshot object which is an
+            //Immutable representation of the most recent interaction with
+            //an asynchronous computation.
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<Gorevler2>? gorevler = snapshot.data;
+                return new CustomListView(gorevler2!);
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
+              //return  a circular progress indicator.
+              return new CircularProgressIndicator();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+//end

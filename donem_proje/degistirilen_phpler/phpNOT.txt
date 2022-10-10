@@ -1,0 +1,9 @@
+gorevopAll conecct ayarı yapılacak DONE
+gorevPerALL connect ayarı yapılacak DONE
+
+-----
+website-domains kısmı
+file manager
+httpdocs
+mobil_php
+

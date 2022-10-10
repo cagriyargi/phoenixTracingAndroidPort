@@ -1,0 +1,28 @@
+var response2 =
+        await http.post(Uri.parse("http://10.0.2.2/login/gorevs.php"), body: {
+      "userid": userid,
+    });
+
+var gorevs = jsonDecode(response2.body);
+
+useryap = gorevs[0]['gorev_yap'];
+        gorevid = gorevs[0]['gorev_id'];
+
+/*void deneme() async {
+    var response1 = await http.post(
+        Uri.parse("http://10.0.2.2/login/gorevs.php"),
+        body: {"userid": userid});
+    var gorevs = jsonDecode(response1.body);
+    setState(() {
+      useryap = gorevs[0]['gorev_yap'];
+      gorevid = gorevs[0]['gorev_id'];
+    });
+  }*/
+
+  /*void update(useryap, gorevid) {
+    var url = "http://10.0.2.2/login/gorevs.php";
+    http.post(Uri.parse(url), body: {
+      "useryap": useryap,
+      "gorevid": gorevid,
+    });
+  }*/

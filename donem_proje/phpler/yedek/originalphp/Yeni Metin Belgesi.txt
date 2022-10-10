@@ -1,0 +1,6 @@
+main login page
+1 teknisyen ekranı
+2 nakliye ekranı
+3 kullanıcı bilgileri değiştir ekranı
+4 destek gönder ekranı
+5 destek sorgu ekranı

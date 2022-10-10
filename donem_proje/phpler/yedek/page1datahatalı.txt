@@ -1,0 +1,96 @@
+import 'dart:convert';
+
+import 'package:donem_proje/gorevs.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+
+import 'gorevs.dart';
+import 'main.dart';
+
+Future<List<Gorevler>> fetchGorevler() async {
+  String url = 'http://10.0.2.2/login/gorevs.php';
+  final response = await http.get(Uri.parse(url));
+  return gorevlerFromJson(response.body);
+}
+
+class QueryPage1 extends StatefulWidget {
+  @override
+  _QueryPage1State createState() => _QueryPage1State();
+}
+
+List<dynamic> datauser1 = [];
+
+class _QueryPage1State extends State<QueryPage1> {
+  query() async {
+    var response1 =
+        await http.post(Uri.parse("http://10.0.2.2/login/query.php"), body: {
+      "id": userid,
+    });
+    datauser1 = jsonDecode(response1.body);
+    if (datauser1.length == 0) {
+      print("Else içine giriyor");
+      Fluttertoast.showToast(msg: "VERİTABANI BAĞLANTISI BAŞARISIZ");
+    } else {
+      print(datauser1[0]);
+      print(datauser1[1]);
+      ListView(children: <ListTile>[
+        datauser1[0],
+      ]);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Selam, $userlevel, $username'),
+      ),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/LoginPage');
+            },
+            child: Text('Geri'),
+            style: ElevatedButton.styleFrom(
+                primary: Colors.amber[700], onPrimary: Colors.black),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              query();
+              print("tusun içindeki $datauser1");
+            },
+            child: Text('Sorgu'),
+            style: ElevatedButton.styleFrom(
+                primary: Colors.amber[700], onPrimary: Colors.black),
+          ),
+          Container(
+            child: FutureBuilder(
+              future: fetchGorevler(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) print(snapshot.error);
+                return snapshot.hasData
+                    ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          var list;
+                          list = snapshot.data ?? ['listeBos'];
+                          Gorevler gorev = list.data[index];
+                          return ListTile(
+                            title: Text('${gorev.gorevAdi}'),
+                          );
+                        })
+                    : Center(
+                        child: CircularProgressIndicator(),
+                      );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

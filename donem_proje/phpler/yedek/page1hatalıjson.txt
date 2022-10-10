@@ -1,0 +1,89 @@
+import 'dart:convert';
+
+import 'package:donem_proje/main.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'main.dart';
+
+class DataFromAPI extends StatefulWidget {
+  @override
+  _DataFromAPIState createState() => _DataFromAPIState();
+}
+
+class _DataFromAPIState extends State<DataFromAPI> {
+  getGorevData() async {
+    var response = await http.get(Uri.http("192.168.1.102", "/gorev.php"));
+    //var response = await http.get(Uri.http(authority, unencodedPath);
+    //var response = await http.get(Uri.https('jsonplaceholder.typicode.com', 'users'));
+    var jsonData = jsonDecode(response.body);
+    print("JSONDATA");
+    print(jsonData);
+    print("JSONDATA_SON");
+    List<Gorev> gorevler = [];
+    for (var g in jsonData) {
+      Gorev gorev = Gorev(
+          g["id"], g["adi"], g["adres"], g["calisan"], g["yap"], g["tarih"]);
+      gorevler.add(gorev);
+    }
+    print(gorevler.length);
+    print("Gorevler");
+    print(gorevler);
+    print("Gorevler_SON");
+    return gorevler;
+    /*List<User> users = [];
+    for (var u in jsonData) {
+      User user = User(u['name'], u['email'], u['username']);
+      users.add(user);
+    }
+    print(users.length);
+    return users;*/
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Merhaba $username, $userlevel"),
+      ),
+      body: Container(
+        child: Card(
+          child: FutureBuilder(
+            future: getGorevData(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) {
+                return CircularProgressIndicator();
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, i) {
+                    return ListTile(
+                      title: Text(snapshot.data[i].gorev_adi ?? "HAta ad"),
+                      subtitle:
+                          Text(snapshot.data[i].gorev_adres ?? "HATA email"),
+                      /*title: Text(snapshot.data[i].name ?? "HAta ad"),
+                      subtitle: Text(snapshot.data[i].email ?? "HATA email"),*/
+                    );
+                  },
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Gorev {
+  final String gorev_id, gorev_adi, gorev_adres, gorev_calisan, gorev_yap;
+  final DateTime gorev_tarih;
+
+  Gorev(this.gorev_id, this.gorev_adi, this.gorev_adres, this.gorev_calisan,
+      this.gorev_yap, this.gorev_tarih);
+}
+/*class User {
+  final String name, email, userName;
+
+  User(this.name, this.email, this.userName);
+}*/

@@ -1,0 +1,24 @@
+{
+   "gorev_id":3,
+   "gorev_adi":"boya",
+   "gorev_adres":"izmir",
+   "gorev_calisan":1,
+   "gorev_tarih":"2021-10-29 20":"33":19,
+   "gorev_yap":0
+},
+{
+   "gorev_id":4,
+   "gorev_adi":"kargo",
+   "gorev_adres":"aydin",
+   "gorev_calisan":2,
+   "gorev_tarih":"2021-10-29 20":"33":41,
+   "gorev_yap":0
+},
+{
+   "gorev_id":5,
+   "gorev_adi":"duvar",
+   "gorev_adres":"istanbul",
+   "gorev_calisan":1,
+   "gorev_tarih":"2021-10-29 22":"58":14,
+   "gorev_yap":0
+}

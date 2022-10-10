@@ -1,0 +1,97 @@
+https://phoenixtracing.com/mobil_php/turkish.php
+routes: <String, WidgetBuilder>{
+        '/page1': (BuildContext context) => MyHomePage1(),
+        '/page2': (BuildContext context) => MyHomePage2(),
+        '/page3': (BuildContext context) => Page3(),
+        '/LoginPage': (BuildContext context) => LoginPage(),
+        "/logout": (_) => new Page3(),
+      },
+-----------------------------------------
+Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        // ignore: deprecated_member_use
+        accentColor: Colors.amber[700],
+        appBarTheme: AppBarTheme(color: Colors.amber[700]),
+        brightness: Brightness.dark,
+      ),
+      home:SplashScreen(),
+      routes: <String, WidgetBuilder>{
+        '/page1': (BuildContext context) => MyHomePage1(),
+        '/page2': (BuildContext context) => MyHomePage2(),
+        '/page3': (BuildContext context) => Page3(),
+        '/LoginPage': (BuildContext context) => LoginPage(),
+      },
+    );
+  }
+---------------
+SplashScreen(
+          seconds: 3,
+          title: new Text('Welcome In SplashScreen'),
+          image: new Image.asset('assets/images/logo403.png'),
+          backgroundColor: Colors.white,
+          photoSize: 100.0,
+          loaderColor: Colors.red,
+          pageRoute: _createRoute()),
+
+
+
+home: SplashScreen(
+          seconds: 5,
+          navigateAfterSeconds: LoginPage(),
+          title: new Text(
+            'PHOENIX TRACING',
+            style: new TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 35.0,
+                color: Colors.amber[700]),
+          ),
+          image: new Image.asset('assets/images/logo403.png'),
+          photoSize: 100.0,
+          backgroundColor: Colors.black26,
+          styleTextUnderTheLoader: new TextStyle(),
+          loaderColor: Colors.amber[700]),
+
+home: AnimatedSplashScreen(
+        duration: 3000,
+        splash: 'assets/images/logo403.png',
+        nextScreen: LoginPage(),
+        splashTransition: SplashTransition.sizeTransition,
+        pageTransitionType: PageTransitionType.fade,
+        backgroundColor: Colors.red[850],
+      ),
+
+Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => LoginPage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
+SplashScreen(
+        seconds: 5,
+        navigateAfterSeconds: _createRoute(),
+        title: new Text(
+          'PHOENIX TRACING',
+          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+        ),
+        image: new Image.asset('assets/images/logo403.png'),
+        backgroundColor: Colors.grey[850],
+        styleTextUnderTheLoader: new TextStyle(),
+        photoSize: 100.0,
+        loaderColor: Colors.amber[700],
+        pageRoute: _createRoute(),
+      ),
